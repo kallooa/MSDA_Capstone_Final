@@ -1,0 +1,6 @@
+Install ImageMagick, with legacy tools
+
+Navigate into each directory with images and run this command:
+mogrify -format jpg -resize 150x150! *.jpg
+
+This will resize all images in the directory to 150 x 150 pixels

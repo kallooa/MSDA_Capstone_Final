@@ -1,0 +1,24 @@
+Setting Up Your Deep Learning Environment
+
+**My environment is set up on Windows 10 so these instructions are for same. I can provide more instructions if you want to use Linux (which will probably be necessary if you pursue a cloud solution)
+
+Requirements: 
+
+NVidia GPU, CUDA-compatible
+- virtually all modern high-end NVidia GPUs are CUDA-compatible
+- Google Cloud / Azure / AWS will provide CUDA-compatible hardware by default should you chose to use them
+
+Visual Studio 2017
+Python 3.5 or above
+- Latest version of Anaconda3 highly recommended
+Tensorflow
+Keras v2
+CUDA Toolkit
+cuDNN
+
+
+Notes: 
+* Install the above items in the order they appear in the list
+* Visual Studio 2015 is also fine
+* I use only Python 3. Python 2 is ancient.
+* I would also recommend doing the above installation on a completely clean OS environment. It usually goes more smoothly. 

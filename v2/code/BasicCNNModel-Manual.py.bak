@@ -1,0 +1,110 @@
+# Not yet tested
+
+#Import Libraries:
+from __future__ import print_function
+import keras
+from keras.preprocessing.image import ImageDataGenerator
+from keras.models import Sequential
+from keras.layers import Dense, Activation, Flatten
+from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers import Dense, GlobalAveragePooling2D
+from keras.layers.convolutional import Conv2D
+from keras.optimizers import adam
+from keras.models import Model
+
+import numpy as np
+import pandas as pd
+import random
+import math
+
+#wrap model creation process in this create_model function
+#variables being sent into function are number of channels (3 for color images), number of convolutional filters to be used, and number of rows and columns in the convolutional kernel to be used
+def create_model(channels, num_conv_filters_layer1, num_conv_kernel_rows, num_conv_kernel_cols, num_conv_filters_layer2):
+    model = Sequential() #initiate Sequential model
+    act = 'relu' #Rectified linear units almost always produce better results than sigmoid or tanh for deep learning. No one really knows why (at least last time I checked).
+    nb_classes = 2 #Number of classes for output. Yes/No would be a 2 class problem
+
+
+    #Here we create a convolutional layer, followed by an activation function, followed by another convolutional layer, followed by an activation function, followed by a pooling layer
+    #Then those layers are repeated 4 more times
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same', input_shape=(150, 150, 3)))
+    model.add(Activation(act))
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(Conv2D(num_conv_filters_layer1, (num_conv_kernel_rows, num_conv_kernel_cols), padding='same'))
+    model.add(Activation(act))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Flatten()) #Create a layer to flatten convolutional data into 1D structure to feed into fully connected layer
+    model.add(Dense(128)) #Create a fully connected layer with 128 nodes
+    model.add(Activation(act)) #Activation function
+    model.add(Dense(128)) #Fully connected layer
+    model.add(Activation(act)) #Activation function
+    model.add(Dense(128)) #Fully connected layer
+    model.add(Activation(act)) #Activation function
+
+    model.add(Dense(nb_classes)) #Create the fully connected layer that will output the final classification
+    model.add(Activation('softmax')) #final layer to output probabilities
+    return model
+
+if __name__ == '__main__':
+    colormode = 'rgb'
+    channels = 3 #color images have 3 channels. grayscale images have 1 channel
+    batchsize = 1 #Number of images to be used in each processing batch. Larger batches have a greater impact on training accuracy but that isn't always a good thing
+    trainingsamples = 25 #Number of images to be used for training set
+    validationsamples = 25
+    model_name = 'KovalModel1Sample' #Any name for saving and keeping track of this model
+    root_dir = 'C:\\Users\\Aadi\\Documents\\GitHub\\KovalCNN\\'
+
+    model = create_model(channels, 48, 3, 3, 32) #create model
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']) #create model with for binary output with the adam optimization algorithm
+    train_datagen = ImageDataGenerator(horizontal_flip=True, vertical_flip=True) # use ImageDataGenerator to enhance the size of our dataset by randomly flipping images. There are many more transformations that are possible
+    test_datagen = ImageDataGenerator()
+
+#the following code reads images, trains the model, and saves the training history to a csv file:
+
+    train_generator = train_datagen.flow_from_directory(
+            root_dir+"data\\train",
+            root_dir=(150, 150),
+            batch_size=batchsize,
+            color_mode=colormode)
+
+    validation_generator = test_datagen.flow_from_directory(
+            root_dir+"data\\val",
+            target_size=(150, 150),
+            batch_size=batchsize,
+            color_mode=colormode)
+
+    history = model.fit_generator(
+            train_generator,
+            steps_per_epoch=trainingsamples/batchsize,
+            epochs=100,
+            validation_data=validation_generator,
+            validation_steps=validationsamples/batchsize)
+
+    hist = history.history
+    hist = pd.DataFrame(hist)
+    hist.to_csv(root_dir+'results\\'+model_name+'.csv')
+    model.save(root_dir+'models\\'+model_name+'.h5')

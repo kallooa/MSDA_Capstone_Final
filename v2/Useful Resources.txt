@@ -1,0 +1,22 @@
+Cifar-10 dataset:
+https://www.cs.toronto.edu/~kriz/cifar.html
+
+ImageNet dataset:
+http://www.image-net.org/
+
+Notes on Neural Network Architecture from Stanford:
+https://cs231n.github.io/
+
+The Deep Learning Book:
+http://www.deeplearningbook.org/
+
+Cool Blog on Computer Vision:
+https://www.pyimagesearch.com/
+- I am actually subscribed to Adrian's private "Gurus" course. I may be able to forward some content if you're interested
+
+Statistical Learning Book:
+http://www-bcf.usc.edu/~gareth/ISL/index.html
+- Understanding the underlying mathematics can be extremely helpful when it comes to selecting hyperparameters for deep learning models. This book doesn't go into deep learning specifically, but it does provide a very good foundation and will significantly help with understanding the mechanics of machine learning. 
+
+
+I have a lot more but I will stop here for now because that is a lot of content to cover. 
